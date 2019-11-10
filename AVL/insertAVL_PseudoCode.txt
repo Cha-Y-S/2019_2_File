@@ -1,0 +1,67 @@
+insertAVL(new_key){
+	if(root = null) then {
+		y <- getTreeNode();
+		y.key <- new_key;
+		root <- y;
+		root.bf <- 0;
+		root.left = null;
+		root.right = null;
+		return true;
+	}
+	f <- null; a <- p <- root; q <- null; found <- false;
+	// phase 1 : new_key의 삽입 위치 조사
+	while(p != null and found = false) do {
+		if( p.bf != 0) then {a <- p; f <- q;}
+		if( new_key < p.key) then { q <- p; p <- p.left;}
+			// 왼쪽 서브트리로 이동
+		else if( new_key > p.key) then {q <- p; p <- p.right;}
+			// 오른쪽 서브트리로 이동
+		else { y <- p; found <- true; }
+	} //while
+	// phase 2 : new_key를 삽입하고 균형화, new_key는 트리에 없음, q의 적절한 자식으로 삽입
+	if(found = false) then{
+		y <- getTreeNode();
+		y.key <- new_key; y.left <- null; y.right <- null; y.bf <- 0;
+		if(new_key < q.key) then q.left <- y; // q의 왼쪽 자식으로 삽입
+		else q.right <- y;
+		
+		if( new_key > a.key) then {p <- a.right; b <- p; d <- -1;}
+		else {p <- a.left; b <- p; d <- -1;}
+		while( p != y) do {
+			if (new_key > p.key) then {p.bf <- -1; p <- p.right; }
+					// 오른쪽 높이를 1 증가
+			else {p.bf <- 1; p <- p.left;}	//왼쪽 높이를 1 증가
+		} // while( p!=y)
+		unbalanced <- true; // 트리가 불균형인가를 검사
+		if(a.bf != 0 or a.bf + d != 0) then {	//트리가 아직 균형
+			a.bf <- a.bf+d; unbalanced <- true;}
+		if(unbalanced = true) then {	//트리가 불균형. 회전 유형을 결정
+			if( d= 1) then {	//왼쪽 불균형
+				if (b.bf = 1) then{	// 회전 타입 LL
+					a.left <- b.right;
+					b.right <- a; a.bf <- 0; b.bf <- 0;
+				}
+				else {
+					c <- b.right; b.right <- c.left; a.left <- c.right;
+					c.elft <- b; c.right <- a;
+					switch(c.bf){
+						case 1: a.bf <- -1; b.bf <- 0; break;	// LR (b)
+						case -1 : b.bf <- 1; a.bf <- 0; break;	// LR (c)
+						case 0 : b.bf <- 0; a.bf <- 0; break; 	// LR (a)
+					} switch
+					c.bf <- 0; b <- c;
+				} else 회전타입 LR
+			} // 왼쪽 불균형
+			else {
+			// 오른쪽 불균형. 왼쪽 불균형의 대칭 코드
+			}
+			if (f != null) then root <- b; // b를 루트로 하는 서브트리가
+					// 균형을 맞추고 새로운 서브트리가 됨
+			else if( a = f.left) then f.left <- b;
+			else if( a= f.right) then f.right <- b;
+		} //if (unbalanced = true)
+		return true;
+	} //if( found = false)
+	return flase;
+}end insertAVL()
+					
