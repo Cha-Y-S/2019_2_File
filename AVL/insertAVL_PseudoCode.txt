@@ -1,5 +1,5 @@
 insertAVL(new_key){
-	if(root = null) then {
+	if(T = null) then {
 		y <- getTreeNode();
 		y.key <- new_key;
 		root <- y;
@@ -26,24 +26,26 @@ insertAVL(new_key){
 		else q.right <- y;
 		
 		if( new_key > a.key) then {p <- a.right; b <- p; d <- -1;}
-		else {p <- a.left; b <- p; d <- -1;}
+		else {p <- a.left; b <- p; d <- 1;}
 		while( p != y) do {
 			if (new_key > p.key) then {p.bf <- -1; p <- p.right; }
 					// 오른쪽 높이를 1 증가
 			else {p.bf <- 1; p <- p.left;}	//왼쪽 높이를 1 증가
 		} // while( p!=y)
-		unbalanced <- true; // 트리가 불균형인가를 검사
 		if(a.bf != 0 or a.bf + d != 0) then {	//트리가 아직 균형
-			a.bf <- a.bf+d; unbalanced <- true;}
+			a.bf <- a.bf+d; }
+		if(a.bf != 2 and a.bf != -2) then {
+			unbalanced <- false;}
+		else{ unbalanced = true; }
 		if(unbalanced = true) then {	//트리가 불균형. 회전 유형을 결정
 			if( d= 1) then {	//왼쪽 불균형
 				if (b.bf = 1) then{	// 회전 타입 LL
 					a.left <- b.right;
 					b.right <- a; a.bf <- 0; b.bf <- 0;
 				}
-				else {
+				else { // b.bf != 1
 					c <- b.right; b.right <- c.left; a.left <- c.right;
-					c.elft <- b; c.right <- a;
+					c.left <- b; c.right <- a;
 					switch(c.bf){
 						case 1: a.bf <- -1; b.bf <- 0; break;	// LR (b)
 						case -1 : b.bf <- 1; a.bf <- 0; break;	// LR (c)
@@ -52,10 +54,23 @@ insertAVL(new_key){
 					c.bf <- 0; b <- c;
 				} else 회전타입 LR
 			} // 왼쪽 불균형
-			else {
-			// 오른쪽 불균형. 왼쪽 불균형의 대칭 코드
+			else { // d= -1
+				if(b.bf = -1)then{
+					a.right <- b.left;
+					b.left <- a; a.bf <- 0; b.bf <- 0;
+				}
+				else { // b.bf != -1
+					c <- b.left; b.left <- c.right; a.right <- c.left;
+					c.left <- a; c.right <- b;
+					switch(c.bf){
+						case 1: a.bf <- 0; b.bf <- -1; break;
+						case -1 : b.bf <- 0; a.bf <- 1; break;
+						case 0 : b.bf <- 0; a.bf <- 0; break;
+					} switch
+					c.bf <- 0; b<- c;
+				} else 회전타입 RL
 			}
-			if (f != null) then root <- b; // b를 루트로 하는 서브트리가
+			if (f = null) then root <- b; // b를 루트로 하는 서브트리가
 					// 균형을 맞추고 새로운 서브트리가 됨
 			else if( a = f.left) then f.left <- b;
 			else if( a= f.right) then f.right <- b;
@@ -64,4 +79,3 @@ insertAVL(new_key){
 	} //if( found = false)
 	return flase;
 }end insertAVL()
-					
